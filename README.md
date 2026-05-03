@@ -62,6 +62,12 @@ Install the macOS fallback dependency:
 brew install terminal-notifier
 ```
 
+### `filter-copilot-openai-models.ts`
+
+Removes OpenAI/GPT models from the GitHub Copilot provider list so Codex remains the single place to select those models.
+
+This is useful only when both `github-copilot` and `openai-codex` are configured in Pi. If Codex is not configured, this extension hides Copilot's GPT models without providing an OpenAI/Codex alternative.
+
 ## External skills
 
 These skills are intentionally **not** committed. Install them separately if desired.
