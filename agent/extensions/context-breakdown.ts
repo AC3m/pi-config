@@ -89,7 +89,7 @@ export default function (pi: ExtensionAPI) {
 				invalidate() {},
 			}), {
 				overlay: true,
-				overlayOptions: { width: "80%", maxHeight: "80%", anchor: "center" },
+				overlayOptions: { width: "100%", maxHeight: "80%", anchor: "top-center" },
 			});
 		},
 	});
