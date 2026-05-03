@@ -1,0 +1,15 @@
+# Pi secrets and local/runtime state
+auth.json
+sessions/
+bin/
+tools/
+*.log
+
+# Local machine overrides
+*.local.json
+.env
+.env.*
+
+# Node/editor noise
+node_modules/
+.DS_Store
