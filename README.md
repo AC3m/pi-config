@@ -6,11 +6,19 @@ Personal configuration for [Pi](https://pi.dev). This repo is intended to be pub
 
 ```text
 agent/
+├── AGENTS.md
 ├── settings.json
 ├── extensions/
+│   ├── context-breakdown.ts
+│   ├── custom-footer.ts
+│   ├── filter-copilot-openai-models.ts
 │   └── notify.ts
 ├── prompts/
 ├── skills/
+│   ├── caveman/
+│   ├── commit-message-format/
+│   ├── gitlab-code-review/
+│   └── jira-ticket-writing/
 └── themes/
 ```
 
@@ -25,7 +33,7 @@ Do not commit Pi runtime state or secrets:
 ~/.pi/agent/tools/
 ```
 
-Third-party skills/extensions/themes should not be vendored here. Install them from upstream and document the command below.
+Third-party skills/extensions/themes should not be vendored here. Install them from upstream and document the command below. Personal skills in `agent/skills/` are committed because they are plain-text workflow instructions and contain no credentials.
 
 ## Install
 
@@ -46,6 +54,10 @@ Reload Pi:
 or restart `pi`.
 
 ## Extensions
+
+### `context-breakdown.ts`
+
+Adds a command that shows approximate token usage by file for files read in the current session.
 
 ### `notify.ts`
 
@@ -68,9 +80,19 @@ Removes OpenAI/GPT models from the GitHub Copilot provider list so Codex remains
 
 This is useful only when both `github-copilot` and `openai-codex` are configured in Pi. If Codex is not configured, this extension hides Copilot's GPT models without providing an OpenAI/Codex alternative.
 
+### `custom-footer.ts`
+
+Replaces Pi's default footer with a compact one-line usage summary:
+
+```text
+154k(12.3%)/272k (auto) ↑154k ↓1.9k R259k $0.955 (sub) caveman:on
+```
+
+`caveman:on/off` updates from user input phrases (`caveman`, `be terse`, `normal mode`, `stop caveman`, `disable caveman`, `caveman off`, etc.).
+
 ## External skills
 
-These skills are intentionally **not** committed. Install them separately if desired.
+Third-party skills are intentionally **not** committed. Install them separately if desired.
 
 ```bash
 npx skills add vercel-labs/skills@find-skills
@@ -84,13 +106,6 @@ To prevent automatic model invocation while keeping manual `/skill:name` usage, 
 disable-model-invocation: true
 ```
 
-Currently used external skill locations on this machine:
-
-```text
-~/.agents/skills/find-skills/SKILL.md
-~/.agents/skills/fullstack-guardian/SKILL.md
-~/.agents/skills/vercel-react-best-practices/SKILL.md
-```
 
 ## Security
 

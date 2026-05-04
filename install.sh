@@ -20,6 +20,7 @@ link_item() {
   echo "Linked $dest -> $source"
 }
 
+link_item AGENTS.md
 link_item settings.json
 link_item extensions
 link_item prompts
