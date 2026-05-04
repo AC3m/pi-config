@@ -90,6 +90,17 @@ Replaces Pi's default footer with a compact one-line usage summary:
 
 `caveman:on/off` updates from user input phrases (`caveman`, `be terse`, `normal mode`, `stop caveman`, `disable caveman`, `caveman off`, etc.).
 
+## Skill dependencies
+
+Some personal skills shell out to external CLIs. Install these on the host as needed:
+
+- `jira-ticket-writing` — requires the [Atlassian CLI (`acli`)](https://developer.atlassian.com/cloud/acli/) for all Jira reads and writes. Verify with `acli auth status`.
+
+```bash
+brew install atlassian/acli/acli
+acli auth login
+```
+
 ## External skills
 
 Third-party skills are intentionally **not** committed. Install them separately if desired.
