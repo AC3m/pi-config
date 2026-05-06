@@ -21,6 +21,13 @@ function getCavemanState(text: string): boolean | undefined {
 	return undefined;
 }
 
+function colorContextUsage(theme: any, text: string, percent: number | null | undefined): string {
+	const value = percent ?? 0;
+	if (value > 90) return theme.fg("error", text);
+	if (value > 70) return theme.fg("warning", text);
+	return theme.fg("dim", text);
+}
+
 function getRightSide(pi: ExtensionAPI, ctx: any, footerData: any): string {
 	const modelName = ctx.model?.id || "no-model";
 	let rightSideWithoutProvider = modelName;
@@ -75,21 +82,23 @@ export default function (pi: ExtensionAPI) {
 				const usage = getAssistantUsage(ctx);
 				const contextUsage = ctx.getContextUsage();
 				const contextWindow = contextUsage?.contextWindow ?? ctx.model?.contextWindow ?? 0;
-				const contextPercent = contextUsage?.percent == null ? "?" : `${contextUsage.percent.toFixed(1)}%`;
+				const contextPercentValue = contextUsage?.percent;
+				const contextPercent = contextPercentValue == null ? "?" : `${contextPercentValue.toFixed(1)}%`;
 				const usingSubscription = ctx.model ? ctx.modelRegistry.isUsingOAuth(ctx.model) : false;
 
+				const contextText = `${formatContextTokens(contextUsage?.tokens)}(${contextPercent})/${formatTokens(contextWindow)}`;
 				const parts = [
-					`${formatContextTokens(contextUsage?.tokens)}(${contextPercent})/${formatTokens(contextWindow)}`,
-					"(auto)",
+					colorContextUsage(theme, contextText, contextPercentValue),
+					theme.fg("dim", "(auto)"),
 				];
 
-				if (usage.input) parts.push(`↑${formatTokens(usage.input)}`);
-				if (usage.output) parts.push(`↓${formatTokens(usage.output)}`);
-				if (usage.cacheRead) parts.push(`R${formatTokens(usage.cacheRead)}`);
-				if (usage.cacheWrite) parts.push(`W${formatTokens(usage.cacheWrite)}`);
-				if (usage.cost || usingSubscription) parts.push(`$${usage.cost.toFixed(3)}${usingSubscription ? " (sub)" : ""}`);
+				if (usage.input) parts.push(theme.fg("dim", `↑${formatTokens(usage.input)}`));
+				if (usage.output) parts.push(theme.fg("dim", `↓${formatTokens(usage.output)}`));
+				if (usage.cacheRead) parts.push(theme.fg("dim", `R${formatTokens(usage.cacheRead)}`));
+				if (usage.cacheWrite) parts.push(theme.fg("dim", `W${formatTokens(usage.cacheWrite)}`));
+				if (usage.cost || usingSubscription) parts.push(theme.fg("dim", `$${usage.cost.toFixed(3)}${usingSubscription ? " (sub)" : ""}`));
 
-				parts.push(`caveman:${cavemanEnabled ? "on" : "off"}`);
+				parts.push(theme.fg("dim", `caveman:${cavemanEnabled ? "on" : "off"}`));
 
 				let left = parts.join(" ");
 				let leftWidth = visibleWidth(left);
@@ -99,8 +108,8 @@ export default function (pi: ExtensionAPI) {
 				}
 
 				const minPadding = 2;
-				let right = getRightSide(pi, ctx, footerData);
-				const rightWithoutProvider = getRightSide(pi, ctx, { getAvailableProviderCount: () => 1 });
+				let right = theme.fg("dim", getRightSide(pi, ctx, footerData));
+				const rightWithoutProvider = theme.fg("dim", getRightSide(pi, ctx, { getAvailableProviderCount: () => 1 }));
 				if (right !== rightWithoutProvider && leftWidth + minPadding + visibleWidth(right) > width) {
 					right = rightWithoutProvider;
 				}
@@ -121,7 +130,7 @@ export default function (pi: ExtensionAPI) {
 					}
 				}
 
-				return [theme.fg("dim", line)];
+				return [line];
 			},
 		}));
 	});
