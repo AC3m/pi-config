@@ -5,7 +5,7 @@ description: Set or update the pi session display name based on what the convers
 
 # Name Session
 
-Pick a short name that describes the work in this session, then set it with `/name <name>`.
+Pick a short name that describes the work in this session, then set it with the `set_session_name` tool.
 
 ## Format
 
@@ -29,8 +29,9 @@ Only include identifiers that actually appear in the session. Do not guess.
 
 1. Skim the session for: stated goal, files touched, JIRA/MR/PR IDs, repo name.
 2. Draft one name following the format above.
-3. Run `/name <drafted name>`.
-4. If the user pushes back, adjust and run `/name` again.
+3. Call the `set_session_name` tool with the drafted name.
+4. If the tool is unavailable, tell the user to type `/name <drafted name>` manually.
+5. If the user pushes back, adjust and call `set_session_name` again.
 
 ## Examples
 

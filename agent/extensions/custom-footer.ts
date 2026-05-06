@@ -14,6 +14,21 @@ function formatContextTokens(count: number | null | undefined): string {
 	return count == null ? "?" : `${Math.floor(count / 1000)}k`;
 }
 
+function getSessionLocation(ctx: any, footerData: any, theme: any): string {
+	let pwd = ctx.sessionManager.getCwd();
+	const home = process.env.HOME || process.env.USERPROFILE;
+	if (home && pwd.startsWith(home)) pwd = `~${pwd.slice(home.length)}`;
+
+	const branch = footerData.getGitBranch();
+	const sessionName = ctx.sessionManager.getSessionName();
+
+	let line = theme.fg("dim", pwd);
+	if (branch) line += theme.fg("muted", ` (${branch})`);
+	if (sessionName) line += theme.fg("dim", " • ") + theme.fg("accent", theme.bold(sessionName));
+
+	return line;
+}
+
 function getCavemanState(text: string): boolean | undefined {
 	const normalized = text.toLowerCase();
 	if (["stop caveman", "disable caveman", "caveman off", "normal mode", "verbose"].some((phrase) => normalized.includes(phrase))) return false;
@@ -76,7 +91,8 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	pi.on("session_start", (_event, ctx) => {
-		ctx.ui.setFooter((_tui, theme, footerData) => ({
+		ctx.ui.setFooter((tui, theme, footerData) => ({
+			dispose: footerData.onBranchChange(() => tui.requestRender()),
 			invalidate() {},
 			render(width: number): string[] {
 				const usage = getAssistantUsage(ctx);
@@ -85,6 +101,7 @@ export default function (pi: ExtensionAPI) {
 				const contextPercentValue = contextUsage?.percent;
 				const contextPercent = contextPercentValue == null ? "?" : `${contextPercentValue.toFixed(1)}%`;
 				const usingSubscription = ctx.model ? ctx.modelRegistry.isUsingOAuth(ctx.model) : false;
+				const pwdLine = truncateToWidth(getSessionLocation(ctx, footerData, theme), width, theme.fg("dim", "..."));
 
 				const contextText = `${formatContextTokens(contextUsage?.tokens)}(${contextPercent})/${formatTokens(contextWindow)}`;
 				const parts = [
@@ -130,7 +147,7 @@ export default function (pi: ExtensionAPI) {
 					}
 				}
 
-				return [line];
+				return [pwdLine, line];
 			},
 		}));
 	});

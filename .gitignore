@@ -6,6 +6,7 @@ tools/
 *.log
 
 # Local machine overrides
+agent/settings.json
 *.local.json
 .env
 .env.*
