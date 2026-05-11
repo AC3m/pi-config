@@ -35,7 +35,7 @@ Only include identifiers that actually appear in the session. Do not guess.
 
 ## Examples
 
-- `chore(jira-ticket-writing): switch tooling to acli`
+- `chore(create-jira-item): switch tooling to acli`
 - `feat(PROJECT-1234): refactor sb-epic-value-carousel`
 - `feat(pi-config): add session-naming skill`
 - `fix(discoio-web): carousel hydration (!482)`
