@@ -59,16 +59,21 @@ or restart `pi`.
 
 Adds a command that shows approximate token usage by file for files read in the current session.
 
+### `warp-cli-agent/`
+
+Emits Warp's structured `warp://cli-agent` OSC 777 events for Pi turns:
+
+- `session_start` + `prompt_submit` when Pi starts work
+- `stop` when Pi finishes
+- `permission_request` / `permission_replied` from `hard-guard.ts`
+
+Completion notification titles use the Pi session name when set, otherwise a shortened user prompt. Bodies use short fixed copy: `Pi finished. Open the tab to review.` Warp controls badge visibility and does not expose runtime tab color/size controls.
+
 ### `notify.ts`
 
-Sends a notification when Pi finishes a turn and is ready for input.
+Sends the same completion copy via macOS `terminal-notifier` when Pi finishes outside Warp.
 
-Behavior:
-
-- In Warp: emits Warp structured `warp://cli-agent` notification via OSC 777.
-- Outside Warp on macOS: uses `terminal-notifier`.
-
-Install the macOS fallback dependency:
+Install the fallback dependency:
 
 ```bash
 brew install terminal-notifier
