@@ -8,13 +8,14 @@ description: Finds material code-review issues in GitLab merge requests and post
 ## Workflow
 
 1. Rename pi session: `/name CR !<MR-ID> <GLab-Project-Name>` (example: `/name CR !227 bet-builder-hub`).
-2. Fetch MR metadata once: project id/path, iid, title, description, labels, `base_sha`, `start_sha`, `head_sha`.
+2. Fetch MR metadata once: project id/path, iid, title, description, `web_url`, labels, `base_sha`, `start_sha`, `head_sha`.
 3. Read MR description/Jira context to understand intended scope and acceptance criteria.
 4. Fetch MR changes/diff. Review every changed file/hunk before posting.
 5. Build a candidate ledger. Each finding must reference one file and one anchor line in the MR diff.
 6. Post only material, high-confidence issues with `scripts/post_diff_note.sh` so GitLab creates real `DiffNote`s.
 7. Verify each note type and exact `position.old_path/old_line/new_path/new_line`.
 8. Add `ai-reviewed` label after review completes. Create label first if missing; ask user if creation fails.
+9. Final summary must start with linked MR number: `Reviewed [!<iid>](<web_url>) — <title>`. Use the fetched MR `web_url` so the MR number opens on click.
 
 ## Review depth
 
