@@ -7,13 +7,14 @@ description: Finds material code-review issues in GitLab merge requests and post
 
 ## Workflow
 
-1. Rename pi session: `/name CR <MR-ID> <GLab-Project-Name>`.
-2. Fetch MR metadata once: project id/path, iid, labels, `base_sha`, `start_sha`, `head_sha`.
-3. Fetch MR changes/diff. Review every changed file/hunk before posting.
-4. Build a candidate ledger. Each finding must reference one file and one anchor line in the MR diff.
-5. Post only material, high-confidence issues with `scripts/post_diff_note.sh` so GitLab creates real `DiffNote`s.
-6. Verify each note type and exact `position.old_path/old_line/new_path/new_line`.
-7. Add `ai-reviewed` label after review completes. Create label first if missing; ask user if creation fails.
+1. Rename pi session: `/name CR !<MR-ID> <GLab-Project-Name>` (example: `/name CR !227 bet-builder-hub`).
+2. Fetch MR metadata once: project id/path, iid, title, description, labels, `base_sha`, `start_sha`, `head_sha`.
+3. Read MR description/Jira context to understand intended scope and acceptance criteria.
+4. Fetch MR changes/diff. Review every changed file/hunk before posting.
+5. Build a candidate ledger. Each finding must reference one file and one anchor line in the MR diff.
+6. Post only material, high-confidence issues with `scripts/post_diff_note.sh` so GitLab creates real `DiffNote`s.
+7. Verify each note type and exact `position.old_path/old_line/new_path/new_line`.
+8. Add `ai-reviewed` label after review completes. Create label first if missing; ask user if creation fails.
 
 ## Review depth
 
@@ -26,6 +27,8 @@ For every changed file:
 - keep scanning after finding issues; dedupe by root cause before posting
 
 If fewer than 4 candidate findings exist, run a focused second pass for broken CI/scripts, flaky or false-positive tests, async waits/races, API/typing/config mismatches, error/null/edge cases, security, data loss, and prod regression risk.
+
+Use MR description/Jira context to judge relevance. Prefer findings that affect stated scope or acceptance criteria. Do not post missing-feature comments based only on description unless the diff introduces a regression, CI failure, security risk, or contradicts stated intent.
 
 Post all material issues found. Do not invent comments to reach a count.
 
