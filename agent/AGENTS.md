@@ -1,2 +1,4 @@
+# Agent Instructions
+
 ## Communication
-- Always read and apply the caveman skill at session start. Default level: full.
+- Always read/apply caveman skill at session start. Default level: ultra.

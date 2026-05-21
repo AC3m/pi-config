@@ -1,6 +1,6 @@
-import { DynamicBorder } from "@mariozechner/pi-coding-agent";
-import { Key, matchesKey, truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import { DynamicBorder } from "@earendil-works/pi-coding-agent";
+import { Key, matchesKey, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { Snippet, SnippetKind } from "./types.js";
 
 type PickerTheme = ExtensionContext["ui"]["theme"];

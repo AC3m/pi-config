@@ -18,8 +18,9 @@ Write Jira items that are short, scannable, and precise. Lead with the change, n
 - Default issue type is **User Story** unless the user explicitly asks for another type.
 - Always include a **User Story** section.
 - If persona is not provided, infer it from context. If unsafe, ask.
-- Acceptance Criteria must be numbered.
-- Do not use or mention a target/range for AC count. Include only ACs needed to verify scope.
+- Use **Acceptance Criteria** heading, never **AC**.
+- Number criteria.
+- Include only criteria needed to verify scope.
 
 ## Structures
 

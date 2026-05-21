@@ -7,19 +7,25 @@ Personal configuration for [Pi](https://pi.dev). This repo is intended to be pub
 ```text
 agent/
 ├── AGENTS.md
-├── settings.json
 ├── extensions/
-│   ├── context-breakdown.ts
+│   ├── auto-name-session.ts
+│   ├── context.ts
 │   ├── custom-footer.ts
+│   ├── figma-assets/
 │   ├── filter-copilot-openai-models.ts
-│   └── notify.ts
-├── prompts/
-├── skills/
-│   ├── caveman/
-│   ├── commit-message-format/
-│   ├── gitlab-code-review/
-│   └── jira-ticket-writing/
-└── themes/
+│   ├── hard-guard.ts
+│   ├── session-status/
+│   ├── notify.ts
+│   ├── snippet-copy/
+│   └── warp-cli-agent/
+└── skills/
+    ├── commit-message-format/
+    ├── copy-message-drafting/
+    ├── create-jira-item/
+    ├── gitlab-code-review/
+    ├── name-session/
+    ├── slack-codex-bridge/
+    └── write-a-skill/
 ```
 
 ## What is not committed
@@ -33,7 +39,28 @@ Do not commit Pi runtime state or secrets:
 ~/.pi/agent/tools/
 ```
 
-Third-party skills/extensions/themes should not be vendored here. Install them from upstream and document the command below. Personal skills in `agent/skills/` are committed because they are plain-text workflow instructions and contain no credentials.
+Local-only overrides and external skill symlinks are ignored in `.gitignore`, including:
+
+```text
+agent/settings.json
+agent/extensions/sb-ai-version.ts
+agent/skills/diagnose
+agent/skills/grill-me
+agent/skills/grill-with-docs
+agent/skills/improve-codebase-architecture
+agent/skills/prototype
+agent/skills/skill-creator
+agent/skills/tdd
+agent/skills/to-issues
+agent/skills/to-prd
+agent/skills/triage
+agent/skills/typescript-advanced-types
+agent/skills/vercel-composition-patterns
+agent/skills/vercel-react-view-transitions
+agent/skills/zoom-out
+```
+
+Third-party skills/extensions/themes should not be vendored here. Install them from upstream and document install commands instead.
 
 ## Install
 
@@ -55,9 +82,37 @@ or restart `pi`.
 
 ## Extensions
 
-### `context-breakdown.ts`
+### `session-status/`
 
-Adds a command that shows approximate token usage by file for files read in the current session.
+Owns the session metadata widget above the input editor. Displays:
+
+```text
+caveman:full • sb-ai:v1.2.3 • loaded skills: caveman, clean-code-ts
+```
+
+- `caveman:<level>` shows `lite`, `full`, or `ultra` when enabled.
+- `caveman:off` stays off when disabled.
+- `sb-ai:<version>` appears when `sb-ai` can be found through `PI_SB_AI_PATH`, `SB_AI_PATH`, or the Pi package install directory.
+- `loaded skills` is inferred from skill blocks and loaded `SKILL.md` reads in current context.
+
+### `snippet-copy/`
+
+Extracts copyable code blocks and tagged assistant messages. It only handles copy behavior; it does not render persistent UI.
+
+Commands and shortcuts:
+
+- `/copy-code` or `ctrl+shift+c` — pick and copy a code snippet without terminal wrapping.
+- `/copy-msg` or `ctrl+shift+m` — pick and copy a full assistant message as rich Slack-friendly text.
+
+### `custom-footer.ts`
+
+Replaces Pi's default footer with a compact usage/model summary and current repository location:
+
+```text
+154k(12.3%)/272k (auto) ↑154k ↓1.9k R259k $0.955 (sub)            gpt-5.5 • xhigh
+```
+
+Also adds current-branch GitLab MR link discovery and `/open-mr`.
 
 ### `warp-cli-agent/`
 
@@ -85,25 +140,18 @@ Removes OpenAI/GPT models from the GitHub Copilot provider list so Codex remains
 
 This is useful only when both `github-copilot` and `openai-codex` are configured in Pi. If Codex is not configured, this extension hides Copilot's GPT models without providing an OpenAI/Codex alternative.
 
-### `custom-footer.ts`
+### `figma-assets/`
 
-Replaces Pi's default footer with a compact one-line usage summary:
+Adds tools for listing Figma nodes and exporting assets from Figma file URLs or node IDs.
 
-```text
-154k(12.3%)/272k (auto) ↑154k ↓1.9k R259k $0.955 (sub) caveman:on
-```
+## CLI dependencies
 
-`caveman:on/off` updates from user input phrases (`caveman`, `be terse`, `normal mode`, `stop caveman`, `disable caveman`, `caveman off`, etc.).
-
-## Skill dependencies
-
-Some personal skills shell out to external CLIs. Install these on the host as needed:
-
-- `jira-ticket-writing` — requires the [Atlassian CLI (`acli`)](https://developer.atlassian.com/cloud/acli/) for all Jira reads and writes. Verify with `acli auth status`.
+Some personal skills/extensions shell out to external CLIs. Install these on the host as needed:
 
 ```bash
 brew install atlassian/acli/acli
 acli auth login
+brew install glab
 ```
 
 ## External skills
@@ -121,7 +169,6 @@ To prevent automatic model invocation while keeping manual `/skill:name` usage, 
 ```yaml
 disable-model-invocation: true
 ```
-
 
 ## Security
 

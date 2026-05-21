@@ -7,6 +7,21 @@ tools/
 
 # Local machine overrides
 agent/settings.json
+agent/extensions/sb-ai-version.ts
+agent/skills/diagnose
+agent/skills/grill-me
+agent/skills/grill-with-docs
+agent/skills/improve-codebase-architecture
+agent/skills/prototype
+agent/skills/skill-creator
+agent/skills/tdd
+agent/skills/to-issues
+agent/skills/to-prd
+agent/skills/triage
+agent/skills/typescript-advanced-types
+agent/skills/vercel-composition-patterns
+agent/skills/vercel-react-view-transitions
+agent/skills/zoom-out
 *.local.json
 .env
 .env.*
