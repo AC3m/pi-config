@@ -1,4 +1,4 @@
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { copyToClipboard } from "./clipboard.js";
 import { extractSnippets } from "./extraction.js";
 import { showSnippetPicker } from "./picker.js";
@@ -26,19 +26,16 @@ async function copySnippet(snippet: Snippet, ctx: ExtensionContext, mode: CopyMo
 async function pickAndCopy(ctx: ExtensionContext, kind: SnippetKind, mode: CopyMode): Promise<void> {
 	const selected = await showSnippetPicker(ctx, kind, store.list(kind));
 	if (selected) await copySnippet(selected, ctx, mode);
-	store.updateWidget(ctx);
 }
 
 export default function snippetCopyExtension(pi: ExtensionAPI) {
 	pi.on("session_start", async (_event, ctx) => {
 		store.rebuildFromSession(ctx);
-		store.updateWidget(ctx);
 	});
 
-	pi.on("message_end", async (event, ctx) => {
+	pi.on("message_end", async (event) => {
 		if (event.message.role !== "assistant") return;
 		store.add(extractSnippets(textFromContent(event.message.content)));
-		store.updateWidget(ctx);
 	});
 
 	pi.registerCommand("copy-code", {
