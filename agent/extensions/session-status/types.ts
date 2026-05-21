@@ -1,12 +1,8 @@
-export type CavemanLevel = "lite" | "full" | "ultra";
-
-export type CavemanStateUpdate =
-	| { enabled: false }
-	| { enabled: true; level?: CavemanLevel };
+import type { CavemanLevel } from "../caveman-mode/events.js";
 
 export interface SessionStatusState {
 	cavemanEnabled: boolean;
-	cavemanLevel: CavemanLevel;
+	cavemanLevel?: CavemanLevel;
 	loadedSkillNames: string[];
 	sbAiVersion?: string;
 }

@@ -14,9 +14,7 @@ export class SessionStatusWidget {
 	invalidate(): void {}
 
 	private renderStatus(): string {
-		const parts = [
-			this.renderPair("caveman", this.state.cavemanEnabled ? this.state.cavemanLevel : "off"),
-		];
+		const parts = [this.renderPair("caveman", this.cavemanText())];
 
 		if (this.state.sbAiVersion) parts.push(this.renderPair("sb-ai", this.state.sbAiVersion));
 		parts.push(this.renderPair("loaded skills", this.loadedSkillsText()));
@@ -26,6 +24,11 @@ export class SessionStatusWidget {
 
 	private renderPair(label: string, value: string): string {
 		return this.theme.fg("muted", `${label}:`) + this.theme.fg("accent", this.theme.bold(value));
+	}
+
+	private cavemanText(): string {
+		if (!this.state.cavemanEnabled || !this.state.cavemanLevel) return "off";
+		return this.state.cavemanLevel;
 	}
 
 	private loadedSkillsText(): string {

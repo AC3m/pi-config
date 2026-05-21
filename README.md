@@ -9,6 +9,7 @@ agent/
 ├── AGENTS.md
 ├── extensions/
 │   ├── auto-name-session.ts
+│   ├── caveman-mode/
 │   ├── context.ts
 │   ├── custom-footer.ts
 │   ├── figma-assets/
@@ -82,18 +83,28 @@ or restart `pi`.
 
 ## Extensions
 
+### `caveman-mode/`
+
+Owns deterministic caveman activation.
+
+- `agent/extensions/caveman-mode/config.json` enables caveman and sets `lite`, `full`, or `ultra`.
+- `PI_CAVEMAN=off` disables caveman for a process.
+- `PI_CAVEMAN_LEVEL=lite|full|ultra` overrides the configured level.
+- Caveman instructions are injected via `before_agent_start`; `AGENTS.md` does not enable caveman.
+- Current caveman state is emitted on `caveman-mode:status` for UI extensions.
+
 ### `session-status/`
 
 Owns the session metadata widget above the input editor. Displays:
 
 ```text
-caveman:full • sb-ai:v1.2.3 • loaded skills: caveman, clean-code-ts
+caveman:ultra • sb-ai:v1.2.3 • loaded skills: caveman, clean-code-ts
 ```
 
-- `caveman:<level>` shows `lite`, `full`, or `ultra` when enabled.
-- `caveman:off` stays off when disabled.
+- `caveman:<level>` shows `lite`, `full`, or `ultra` from `caveman-mode`.
+- `caveman:off` shows when `caveman-mode` is disabled, missing, or has no valid level.
 - `sb-ai:<version>` appears when `sb-ai` can be found through `PI_SB_AI_PATH`, `SB_AI_PATH`, or the Pi package install directory.
-- `loaded skills` is inferred from skill blocks and loaded `SKILL.md` reads in current context.
+- `loaded skills` is inferred from skill blocks, loaded `SKILL.md` reads, and extension-injected caveman context.
 
 ### `snippet-copy/`
 
