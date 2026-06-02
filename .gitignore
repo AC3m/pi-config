@@ -7,7 +7,6 @@ tools/
 
 # Local machine overrides
 agent/settings.json
-agent/extensions/sb-ai-version.ts
 agent/skills/diagnose
 agent/skills/grill-me
 agent/skills/grill-with-docs
