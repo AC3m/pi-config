@@ -5,28 +5,29 @@ Personal configuration for [Pi](https://pi.dev). This repo is intended to be pub
 ## Contents
 
 ```text
-agent/
-├── AGENTS.md
-├── extensions/
-│   ├── auto-name-session.ts
-│   ├── caveman-mode/
-│   ├── context.ts
-│   ├── custom-footer.ts
-│   ├── figma-assets/
-│   ├── filter-copilot-openai-models.ts
-│   ├── hard-guard.ts
-│   ├── session-status/
-│   ├── notify.ts
-│   ├── snippet-copy/
-│   └── warp-cli-agent/
-└── skills/
-    ├── commit-message-format/
-    ├── copy-message-drafting/
-    ├── create-jira-item/
-    ├── gitlab-code-review/
-    ├── name-session/
-    ├── slack-codex-bridge/
-    └── write-a-skill/
+.
+├── AGENT.md
+├── install.sh
+└── agent/
+    ├── AGENTS.md
+    ├── extensions/
+    │   ├── auto-name-session.ts
+    │   ├── caveman-mode/
+    │   ├── context.ts
+    │   ├── custom-footer.ts
+    │   ├── figma-assets/
+    │   ├── hard-guard.ts
+    │   ├── hard-guard/
+    │   ├── notify.ts
+    │   ├── sb-ai-update/
+    │   ├── session-status/
+    │   ├── snippet-copy/
+    │   └── warp-cli-agent/
+    └── skills/
+        ├── copy-message-drafting/
+        ├── name-session/
+        ├── okr/
+        └── slack-codex-bridge/
 ```
 
 ## What is not committed
@@ -44,7 +45,6 @@ Local-only overrides and external skill symlinks are ignored in `.gitignore`, in
 
 ```text
 agent/settings.json
-agent/extensions/sb-ai-version.ts
 agent/skills/diagnose
 agent/skills/grill-me
 agent/skills/grill-with-docs
@@ -71,7 +71,7 @@ Clone this repo, then run:
 ./install.sh
 ```
 
-The script symlinks tracked config into `~/.pi/agent` and moves existing files/directories to a timestamped backup under `~/.pi/agent/backups/`.
+The script symlinks Pi config paths into `~/.pi/agent` and moves existing files/directories to a timestamped backup under `~/.pi/agent/backups/`. `agent/settings.json` is local-only and ignored by git.
 
 Reload Pi:
 
@@ -83,6 +83,15 @@ or restart `pi`.
 
 ## Extensions
 
+### `auto-name-session.ts`
+
+Registers the `set_session_name` tool and schedules `/skill:name-session` when a session is still unnamed.
+
+Triggers:
+
+- after an agent-run `git push`
+- every 10 user messages
+
 ### `caveman-mode/`
 
 Owns deterministic caveman activation.
@@ -92,6 +101,10 @@ Owns deterministic caveman activation.
 - `PI_CAVEMAN_LEVEL=lite|full|ultra` overrides the configured level.
 - Caveman instructions are injected via `before_agent_start`; `AGENTS.md` does not enable caveman.
 - Current caveman state is emitted on `caveman-mode:status` for UI extensions.
+
+### `context.ts`
+
+Adds `/context`, a token-usage grid for the current session. It breaks down system, user, assistant, thinking, tool, compaction, image, and free-space usage.
 
 ### `session-status/`
 
@@ -125,6 +138,10 @@ Replaces Pi's default footer with a compact usage/model summary and current repo
 
 Also adds current-branch GitLab MR link discovery and `/open-mr`.
 
+### `hard-guard.ts`
+
+Adds an approval gate for risky shell commands and user bash commands. Warp receives permission request/reply events when available.
+
 ### `warp-cli-agent/`
 
 Emits Warp's structured `warp://cli-agent` OSC 777 events for Pi turns:
@@ -145,11 +162,14 @@ Install the fallback dependency:
 brew install terminal-notifier
 ```
 
-### `filter-copilot-openai-models.ts`
+### `sb-ai-update/`
 
-Removes OpenAI/GPT models from the GitHub Copilot provider list so Codex remains the single place to select those models.
+Keeps the `sb-ai` Pi package fresh.
 
-This is useful only when both `github-copilot` and `openai-codex` are configured in Pi. If Codex is not configured, this extension hides Copilot's GPT models without providing an OpenAI/Codex alternative.
+- Auto-checks for newer package tags on session start.
+- `/sb-ai-update` updates `sb-ai` and reloads Pi resources.
+- `/sb-ai-reload` reloads Pi resources after an update.
+- `/sb-ai-version` shows the installed `sb-ai` version.
 
 ### `figma-assets/`
 
